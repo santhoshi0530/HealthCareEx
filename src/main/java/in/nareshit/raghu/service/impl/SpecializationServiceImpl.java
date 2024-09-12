@@ -1,15 +1,19 @@
 package in.nareshit.raghu.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import in.nareshit.raghu.entity.Specialization;
 import in.nareshit.raghu.exception.SpecializationNotFoundException;
 import in.nareshit.raghu.repo.SpecializationRepository;
 import in.nareshit.raghu.service.ISpecializationService;
+import in.nareshit.raghu.util.MyCollectionsUtil;
 
 @Service
 public class SpecializationServiceImpl implements ISpecializationService {
@@ -25,6 +29,11 @@ public class SpecializationServiceImpl implements ISpecializationService {
 	@Override
 	public List<Specialization> getAllSpecializations() {
 		return repo.findAll();
+	}
+	
+	@Override
+	public Page<Specialization> getAllSpecializations(Pageable pageable) {
+		return repo.findAll(pageable);
 	}
 
 	@Override
@@ -62,5 +71,16 @@ public class SpecializationServiceImpl implements ISpecializationService {
 	@Override
 	public boolean isSpecCodeExistForEdit(String specCode, Long id) {
 		return repo.getSpecCodeCountForEdit(specCode,id)>0;
+	}
+	
+	@Override
+	public Map<Long, String> getSpecIdAndName() {
+		List<Object[]> list = repo.getSpecIdAndName();
+		Map<Long,String> map = MyCollectionsUtil.convertToMap(list);
+		return map;
+	}
+	@Override
+	public long getSpecializationCount() {
+		return repo.count();
 	}
 }
